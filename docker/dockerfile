@@ -1,0 +1,8 @@
+ARG UID
+ARG LESSONID
+FROM openjdk:11
+COPY ./input/ /zacnikoditAppTests/input/
+WORKDIR /zacnikoditAppTests/input/
+RUN touch output.txt
+RUN javac Code.java
+CMD java Code >> output.txt
