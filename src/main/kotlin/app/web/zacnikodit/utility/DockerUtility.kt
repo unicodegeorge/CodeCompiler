@@ -8,9 +8,16 @@ import java.io.File
 
 class DockerUtility {
     private val pathToContainerID = File("/Users/unicode/Educanet/Dzk_prs/codecompiler/docker/id.txt")
-    private fun getContainerID(): String = File(pathToContainerID.absolutePath).readLines()[0]
+     private fun getContainerID(): String = File(pathToContainerID.absolutePath).readLines()[0]
 
-    fun runContainer() {
+    private fun handleInputs(inputs: MutableList<String>, shell: Shell) {
+        for(input in inputs) {
+            println("Once and once")
+            shell.run("echo '$input'")
+        }
+    }
+
+    fun runContainer(inputs: MutableList<String>) {
         val shell = Shell("sh")
         val dockerDir = ShellLocation.CURRENT_WORKING.resolve("docker")
         println("Building image from dockerfile...")
@@ -20,10 +27,14 @@ class DockerUtility {
 
         println(shell.run("cd docker"))
         println(shell.run("touch id.txt").output)
-        val runningImage =
-            shell.run("echo '${getStdInput()}' | docker run -i -a stdin --name javacode compiler >> id.txt")
+
+        //
+
+        val runningImage = shell.run("docker run -i -d --name javacode compiler >> id.txt")
         if (runningImage.isSuccess) {
             println("It ran smoothly - ${getStdInput()}")
+        } else {
+
         }
 
 

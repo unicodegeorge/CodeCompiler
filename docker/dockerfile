@@ -5,4 +5,4 @@ COPY ./input/ /zacnikoditAppTests/input/
 WORKDIR /zacnikoditAppTests/input/
 RUN touch output.txt
 RUN javac Code.java
-CMD java Code >> output.txt
+CMD java Code < inputs.txt >> output.txt

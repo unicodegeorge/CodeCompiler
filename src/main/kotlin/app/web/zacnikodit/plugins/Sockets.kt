@@ -23,24 +23,45 @@ fun Application.configureSockets() {
                 when (frame) {
                     is Frame.Text -> {
                         val incomingText = frame.readText()
-                        if (incomingText.indexOf("class") != -1) {
-                            val compiler = Compiler(incomingText)
-                            println(CodeScanner(incomingText).getAmountOfInputs())
-                            send("Running your code on our servers...")
-                            try {
-                                compiler.compile()
-                                val linesOfOutput = compiler.getOutput()
-                                send("Entered input : ${getStdInput()}")
-                                for (line in linesOfOutput) {
-                                    send(line)
+
+                        val compiler = Compiler(incomingText)
+                        val amountOfInputs = CodeScanner(incomingText).getAmountOfInputs()
+                        val inputs: MutableList<String> = mutableListOf()
+                        send("Running your code on our servers...")
+
+                        for (i in 1..amountOfInputs) {
+                            send("Enter input number $i: ")
+                            var x = amountOfInputs
+                            for (inputFrame in incoming) {
+                                when (inputFrame) {
+
+                                    is Frame.Text -> {
+                                        val receivedText = inputFrame.readText()
+                                        inputs.add(receivedText)
+                                        break
+                                    }
+                                    else -> {
+
+                                    }
                                 }
-                            } catch (ex: Exception) {
-                                send(ex.message.toString())
                             }
+                        }
+                        try {
+                            compiler.compile(inputs)
+                            val linesOfOutput = compiler.getOutput()
+
+                            for (line in linesOfOutput) {
+                                send(line)
+                            }
+                        } catch (ex: Exception) {
+                            send(ex.printStackTrace().toString())
                         }
                     }
                 }
+
             }
         }
     }
+
 }
+
